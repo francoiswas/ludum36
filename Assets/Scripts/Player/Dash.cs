@@ -32,4 +32,12 @@ public class Dash : MonoBehaviour {
 
 
 	}
+
+
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.tag == "Projectile") {
+			//other.GetComponent<Projectile>().De
+		}
+
+	}
 }
