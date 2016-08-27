@@ -1,14 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Reflection;
 
 public class ShooterManager : MonoBehaviour {
 
 	public GameObject P_Enemy;
+	public GameObject P_DCA;
 	[Range(0,50)]
-	public int NB_ENEMIES;
+	public int NB_ENEMIES_CLASSIC;
+	[Range(0,50)]
+	public int NB_ENEMIES_DCA;
 
 	private float camHeight;
 	private float camWidth;
+
+	private string ClassicTag;
+	private string DcaTag;
 
 
 	// Use this for initialization
@@ -17,18 +24,29 @@ public class ShooterManager : MonoBehaviour {
 		camHeight = 2f * cam.orthographicSize;
 		camWidth = camHeight * cam.aspect;
 
-		for(int i = 0; i < NB_ENEMIES; i++){
-			SpawnEnemy(camHeight, camWidth);
-		}
+		ClassicTag = "EnemyClassic";
+		DcaTag = "EnemyDca";
+
+		SpawnEnemies (P_Enemy, NB_ENEMIES_CLASSIC, ClassicTag);
+		SpawnEnemies (P_DCA, NB_ENEMIES_DCA, DcaTag);
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-		if (transform.childCount < NB_ENEMIES) {
-			SpawnEnemy(camHeight, camWidth);
-		} else if (transform.childCount > NB_ENEMIES) {
-			KillEnemy ();
+		WatchInstance (P_Enemy, NB_ENEMIES_CLASSIC, ClassicTag);
+		WatchInstance (P_DCA, NB_ENEMIES_DCA, DcaTag);
+	}
+
+
+	/// <summary>
+	/// Spawn several enemies.
+	/// </summary>
+	/// <param name="prefab">Prefab.</param>
+	/// <param name="nbInstance">Nb instance.</param>
+	public void SpawnEnemies (GameObject prefab, int nbInstance, string tag) {
+		for(int i = 0; i < nbInstance; i++){
+			SpawnEnemy(prefab, camHeight, camWidth, tag);
 		}
 	}
 
@@ -38,9 +56,10 @@ public class ShooterManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="maxVertical">Max vertical.</param>
 	/// <param name="maxHorizontal">Max horizontal.</param>
-	void SpawnEnemy(float maxVertical, float maxHorizontal) {
-		GameObject clone = Instantiate (P_Enemy) as GameObject;
+	void SpawnEnemy(GameObject prefab, float maxVertical, float maxHorizontal, string tag) {
+		GameObject clone = Instantiate (prefab) as GameObject;
 		clone.transform.parent = transform;
+		clone.tag = tag;
 
 		bool xFixed = Random.Range (0, 2) >= 1 ? true : false;
 
@@ -67,9 +86,27 @@ public class ShooterManager : MonoBehaviour {
 
 
 	/// <summary>
+	/// Watch a specified instance and spawn or kill them.
+	/// </summary>
+	/// <param name="prefab">Prefab.</param>
+	/// <param name="nbInstance">Nb instance.</param>
+	public void WatchInstance(GameObject prefab, int nbInstance, string tag){
+		int currentNbPrefab = GameObject.FindGameObjectsWithTag (tag).Length;
+
+		if (currentNbPrefab < nbInstance) {
+			SpawnEnemy(prefab, camHeight, camWidth, tag);
+		} else if (currentNbPrefab > nbInstance) {
+			KillEnemy (tag);
+		}
+	}
+
+
+	/// <summary>
 	/// Kill a random enemy.
 	/// </summary>
-	void KillEnemy(){
-		Destroy(transform.GetChild (Random.Range (0, transform.childCount - 1)).gameObject);
+	void KillEnemy(string tag){
+		GameObject[] Enemies = GameObject.FindGameObjectsWithTag (tag);
+
+		Destroy(Enemies[Random.Range (0, Enemies.Length - 1)]);
 	}
 }
