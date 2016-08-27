@@ -27,8 +27,6 @@ public class ShooterBehaviour : MonoBehaviour {
 
 		// Placeholder for dynamic instantiation.
 		canFollow = UnityEngine.Random.Range (0, 2) >= 1 ? true : false;
-
-//		InvokeRepeating ("Shoot", 1, burstFreqency);
 	}
 
 
