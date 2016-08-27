@@ -33,8 +33,6 @@ public class Dash : MonoBehaviour {
 
 	void DoDash()
 	{
-		if (LeanTween.isTweening ())
-			return;
 
 		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
 		destination = (Vector2)transform.position+heading.normalized*dashLength;
