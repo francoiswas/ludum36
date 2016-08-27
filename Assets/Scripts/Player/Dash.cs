@@ -20,13 +20,7 @@ public class Dash : MonoBehaviour {
 	void Start () {
 		sprite = this.GetComponent<SpriteRenderer> ();
 		isPlaying = true;
-//		LeanTween.scale (this.gameObject, new Vector2 (2, 2), 1).setOnComplete (
-//			()=>
-//			{
-//				LeanTween.scale (this.gameObject, new Vector2 (1, 1), 1).setDelay(1f);
-//					
-//			}
-//		);
+
 	}
 	
 	// Update is called once per frame
@@ -39,6 +33,8 @@ public class Dash : MonoBehaviour {
 
 	void DoDash()
 	{
+		if (LeanTween.isTweening ())
+			return;
 
 		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
 		destination = (Vector2)transform.position+heading.normalized*dashLength;
@@ -60,7 +56,7 @@ public class Dash : MonoBehaviour {
 		
 				//Invoke ("BecomeVincible", 0.5f);
 				Debug.Log ("BOOM");
-			} else if(isPlaying) {
+			} else if(isPlaying){
 				isPlaying = false;
 				UI.instance.GameOver ();
 				Debug.Log ("GAME OVER");
