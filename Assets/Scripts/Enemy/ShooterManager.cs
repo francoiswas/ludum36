@@ -81,7 +81,7 @@ public class ShooterManager : MonoBehaviour {
 			);
 		}
 
-		clone.transform.position = new Vector3(spawnPosition.x, spawnPosition.y, 1);
+		clone.transform.position = new Vector3(spawnPosition.x, spawnPosition.y, 0);
 	}
 
 
