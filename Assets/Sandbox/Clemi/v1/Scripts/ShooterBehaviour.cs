@@ -32,6 +32,8 @@ public class ShooterBehaviour : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		// Select weapon
 		if (canFollow && bullet != followingBullet) {
 			Debug.Log ("PROJECTILE AUTO");
 			bullet = followingBullet;
@@ -40,11 +42,15 @@ public class ShooterBehaviour : MonoBehaviour {
 			bullet = classicBullet;
 		}
 
+		// Burst Frequency
 		timeElapsed += Time.deltaTime;
 		if (timeElapsed >= burstFreqency) {
 			timeElapsed = 0;
 			Shoot ();
 		}
+
+		// Anim 
+		transform.LookAt (enemyTarget.transform.position);
 	}
 
 	/// <summary>
