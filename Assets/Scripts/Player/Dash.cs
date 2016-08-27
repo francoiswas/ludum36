@@ -10,6 +10,8 @@ public class Dash : MonoBehaviour {
 	private	Vector2 		destination;
 	private bool 			hasDroppedLetter;
 	private bool			isInvincible;
+	private bool			isPlaying;
+
 
 	private SpriteRenderer	sprite;
 
@@ -17,6 +19,14 @@ public class Dash : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		sprite = this.GetComponent<SpriteRenderer> ();
+		isPlaying = true;
+//		LeanTween.scale (this.gameObject, new Vector2 (2, 2), 1).setOnComplete (
+//			()=>
+//			{
+//				LeanTween.scale (this.gameObject, new Vector2 (1, 1), 1).setDelay(1f);
+//					
+//			}
+//		);
 	}
 	
 	// Update is called once per frame
@@ -29,8 +39,6 @@ public class Dash : MonoBehaviour {
 
 	void DoDash()
 	{
-		if (LeanTween.isTweening ())
-			return;
 
 		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
 		destination = (Vector2)transform.position+heading.normalized*dashLength;
@@ -48,14 +56,18 @@ public class Dash : MonoBehaviour {
 				DropLetter ();
 				isInvincible = true;
 
-				StartCoroutine (DoBlinks (10, 0.1f));
+				StartCoroutine (DoBlinks (6, 0.1f));
 		
 				//Invoke ("BecomeVincible", 0.5f);
 				Debug.Log ("BOOM");
-			} else {
+			} else if(isPlaying) {
+				isPlaying = false;
+				UI.instance.GameOver ();
 				Debug.Log ("GAME OVER");
 			}
-		} else if (other.tag == "Letter") {
+		}
+
+		else if (!isInvincible&&other.tag == "Letter") {
 			hasDroppedLetter = false;
 			Destroy (other.gameObject);
 		}
