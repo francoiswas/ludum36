@@ -10,6 +10,7 @@ public class ShooterManager : MonoBehaviour {
 	private float camHeight;
 	private float camWidth;
 
+
 	// Use this for initialization
 	void Start () {
 		Camera cam = Camera.main;
@@ -20,7 +21,8 @@ public class ShooterManager : MonoBehaviour {
 			SpawnEnemy(camHeight, camWidth);
 		}
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
 		if (transform.childCount < NB_ENEMIES) {
@@ -31,6 +33,11 @@ public class ShooterManager : MonoBehaviour {
 	}
 
 
+	/// <summary>
+	/// Spawn an enemy around a square.
+	/// </summary>
+	/// <param name="maxVertical">Max vertical.</param>
+	/// <param name="maxHorizontal">Max horizontal.</param>
 	void SpawnEnemy(float maxVertical, float maxHorizontal) {
 		GameObject clone = Instantiate (P_Enemy) as GameObject;
 		clone.transform.parent = transform;
@@ -59,6 +66,9 @@ public class ShooterManager : MonoBehaviour {
 	}
 
 
+	/// <summary>
+	/// Kill a random enemy.
+	/// </summary>
 	void KillEnemy(){
 		Destroy(transform.GetChild (Random.Range (0, transform.childCount - 1)).gameObject);
 	}

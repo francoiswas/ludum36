@@ -7,6 +7,7 @@ public class ShooterBehaviour : MonoBehaviour {
 
 	private GameObject enemyTarget;
 	private GameObject bullet;
+	private float timeElapsed;
 
 	public GameObject classicBullet;
 	public GameObject followingBullet;
@@ -27,7 +28,7 @@ public class ShooterBehaviour : MonoBehaviour {
 		// Placeholder for dynamic instantiation.
 		canFollow = UnityEngine.Random.Range (0, 2) >= 1 ? true : false;
 
-		InvokeRepeating ("Shoot", 1, burstFreqency);
+//		InvokeRepeating ("Shoot", 1, burstFreqency);
 	}
 
 
@@ -39,6 +40,12 @@ public class ShooterBehaviour : MonoBehaviour {
 		} else if (!canFollow && bullet != classicBullet){
 			Debug.Log ("PROJECTILE CLASSIC");
 			bullet = classicBullet;
+		}
+
+		timeElapsed += Time.deltaTime;
+		if (timeElapsed >= burstFreqency) {
+			timeElapsed = 0;
+			Shoot ();
 		}
 	}
 
