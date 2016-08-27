@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Dache : MonoBehaviour {
+public class Dash : MonoBehaviour {
 	public float 			dashLength;
 	public float 			dashTime;
 	public LeanTweenType 	tweenType;
@@ -16,11 +16,11 @@ public class Dache : MonoBehaviour {
 	void Update () {
 	
 		if (Input.GetMouseButtonDown (0)) {
-			Dash ();
+			DoDash ();
 		}
 	}
 
-	void Dash()
+	void DoDash()
 	{
 		if (LeanTween.isTweening ())
 			return;
@@ -30,6 +30,19 @@ public class Dache : MonoBehaviour {
 
 		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
 
+
+	}
+
+
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.tag == "Projectile") {
+			Debug.Log ("BOOM");
+		}
+
+	}
+
+	void DropLetter()
+	{
 
 	}
 }
