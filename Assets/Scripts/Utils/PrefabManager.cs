@@ -5,7 +5,7 @@ public class PrefabManager : MonoBehaviour {
 
 	public static PrefabManager instance = null;
 
-	public GameObject prefabMachin;
+	public GameObject letter;
 
 	void Awake()
 	{
