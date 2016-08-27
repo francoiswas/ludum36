@@ -39,7 +39,7 @@ public class Projectile : MonoBehaviour {
 	}
 
 	void SraightMovement(){
-		transform.Translate (Vector3.left * Time.deltaTime * projectileSpeed);
+		transform.Translate (Vector3.forward * Time.deltaTime * projectileSpeed);
 	}
 
 	void OnTriggerEnter(Collider other){
