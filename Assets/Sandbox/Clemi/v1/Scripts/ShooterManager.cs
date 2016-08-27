@@ -16,7 +16,6 @@ public class ShooterManager : MonoBehaviour {
 		camHeight = 2f * cam.orthographicSize;
 		camWidth = camHeight * cam.aspect;
 
-		Debug.Log ("NB_ENEMIES " + NB_ENEMIES);
 		for(int i = 0; i < NB_ENEMIES; i++){
 			SpawnEnemy(camHeight, camWidth);
 		}
