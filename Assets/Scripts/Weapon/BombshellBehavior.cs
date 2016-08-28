@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using RSG;
 
-public class BombshellBehavior : Projectile {
+public class BombshellBehavior : ProjectileBehavior {
 
 	public float radiusExplosion;
 	public float explosionDuration;
@@ -15,15 +15,15 @@ public class BombshellBehavior : Projectile {
 		Fire ();	
 	}
 
-	public void Update () {
-//		StartCoroutine ("SraightMovement");
 
+	public void Update () {
 		promiseTimer.Update(Time.deltaTime);
 	}
 
+
 	public void Fire() {
 		LeanTween
-			.move (gameObject, target.transform.position, timeBeforeDestruction)
+			.move (gameObject, targetLookAt.transform.position, timeBeforeDestruction)
 			.setOnComplete ( () => {
 				LeanTween
 					.scale (gameObject, new Vector3 (radiusExplosion, radiusExplosion, radiusExplosion), 0.1f)
