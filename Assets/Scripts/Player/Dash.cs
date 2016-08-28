@@ -8,12 +8,16 @@ public class Dash : MonoBehaviour {
 	public float 			dashTime;
 	[Range (0, 3)]
 	public float 			dashWait;
-	[Range (0.1f, 1)]
+	[Range (0.001f, 1)]
 	public float 			followSpeed;
 
-	public bool 			enableFreeDash;
+	[Tooltip("Dash avec target")]
+	public bool 			enableTargetDash;
+	[Tooltip("Montre la destination du dash courant")]
 	public bool 			enableDashHistory;
+	[Tooltip("Le piaf regarde la souris")]
 	public bool 			enableFollowMouse;
+	[Tooltip("Le piaf suit la souris")]
 	public bool				enableLookAtMouse;
 
 	public LeanTweenType 	tweenType;
@@ -26,21 +30,19 @@ public class Dash : MonoBehaviour {
 	private Vector3			mousePosition;
 	private Vector3 		historyPosition;
 	private bool 			hasDroppedLetter;
-//	private bool			isInvincible;
+
+	//	private bool			isInvincible;
 	private bool			isPlaying;
 
 	private bool			canDash;
 
+	private Camera 			cam;
 
-	private SpriteRenderer	sprite;
-
-
-	// Use this for initialization
 	void Start () {
-		sprite = this.GetComponent<SpriteRenderer> ();
+		cam = Camera.main;
 		isPlaying = true;
 		canDash = true;
-		if (enableFreeDash) {
+		if (enableTargetDash) {
 			target = Instantiate (prefabTarget);
 		}
 
@@ -50,102 +52,88 @@ public class Dash : MonoBehaviour {
 		}
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (enableLookAtMouse) {
-			Vector3 upAxis = new Vector3(0,0,-1);
-			Vector3 mouseScreenPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-			//set mouses z to your targets
-			mouseScreenPosition.z = 0;
 
-			Debug.Log (mouseScreenPosition);
-			//			Vector3 mouseWorldSpace = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
-		}
+	void Update () {
 		if (canDash) {
-			if(Input.GetMouseButtonDown (0) && enableFreeDash) {
-				DoDash (Input.mousePosition,true);
+			if(Input.GetMouseButtonDown (0) && enableTargetDash) {
+				DoDash (true);
 			}
 			else if (Input.GetMouseButtonDown (0)) {
-				DoDash (Input.mousePosition, true);
+				DoDash (true);
 			} else if (Input.GetMouseButtonDown (1)){
-				DoDash (Input.mousePosition, false);
+				DoDash (false);
 			}
 		}
 
-		if (enableFreeDash) {
+		if (enableTargetDash) {
 			DrawTarget ();
 		}
 
 		if (enableFollowMouse) {
-			transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x,
-				Input.mousePosition.y, -Camera.main.transform.position.z)), followSpeed);
+			transform.position = Vector3.Lerp (transform.position, cam.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x,
+				Input.mousePosition.y, -cam.transform.position.z)), followSpeed);
 		}
 
 		if (enableLookAtMouse) {
 			Vector3 mp = Input.mousePosition;
-			mp.z = -Camera.main.transform.position.z;
-			float AngleRad = Mathf.Atan2(Camera.main.ScreenToWorldPoint (mp).y - transform.position.y, Camera.main.ScreenToWorldPoint (mp).x - transform.position.x);
-			// Get Angle in Degrees
+			mp.z = -cam.transform.position.z;
+			float AngleRad = Mathf.Atan2(cam.ScreenToWorldPoint (mp).y - transform.position.y, cam.ScreenToWorldPoint (mp).x - transform.position.x);
 			float AngleDeg = (180 / Mathf.PI) * AngleRad;
-			// Rotate Object
 			this.transform.rotation = Quaternion.Euler(0, 0, AngleDeg);
 		}
 
 	}
 
+
+	/// <summary>
+	/// Dessine l'endroit vers lequel le piaf va aller
+	/// </summary>
 	void DrawTarget()
 	{
-		Vector3 mp  =Input.mousePosition;
-		mp.z = -Camera.main.transform.position.z;
-		Vector3 head = Camera.main.ScreenToWorldPoint (mp)-transform.position;
+		Vector3 mousePosition  =Input.mousePosition;
+		mousePosition.z = -cam.transform.position.z;
+		Vector3 head = cam.ScreenToWorldPoint (mousePosition)-transform.position;
 		Vector3 dest = transform.position+head.normalized*dashLength;
 		target.transform.position = dest;
 		if (enableDashHistory) {
 			historyPosition = dest;
 		}
 
-
-
-
 	}
 
 
-	void DoDash(Vector3 dashPosition, bool up){
+	/// <summary>
+	/// Fait un dash
+	/// </summary>
+	/// <param name="up">If set to <c>true</c> goes up.</param>
+	void DoDash(bool up){
 
-//		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
-//		destination = (Vector2)transform.position+heading.normalized*dashLength;
-//
-//		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
 		canDash=false;
-		mousePosition = dashPosition;
-	
+		mousePosition = Input.mousePosition;
+		mousePosition.z = -cam.transform.position.z;
+		heading = cam.ScreenToWorldPoint (mousePosition)-transform.position;
 
-		mousePosition.z = -Camera.main.transform.position.z;
-		heading = Camera.main.ScreenToWorldPoint (mousePosition)-transform.position;
-
-		if (!enableFreeDash) {
+		if (!enableTargetDash) {
 			heading.y = transform.position.y + (up?10:-10);
-
 		}
 
 		destination = transform.position+heading.normalized*dashLength;
 
-		if (!enableFreeDash) {
+		if (!enableTargetDash) {
 			destination.x = transform.position.x;
-
 		}
 		if (enableDashHistory) {
 			historyTarget.transform.position = historyPosition;
 			historyTarget.SetActive (true);
 		}
-		LeanTween.move (this.gameObject, destination, dashTime).setEase (tweenType).setOnComplete (() => {
-			if(enableDashHistory){
-				historyTarget.SetActive(false);
+		LeanTween.move (this.gameObject, destination, dashTime).setEase (tweenType)
+			.setOnComplete (() => {
+				if(enableDashHistory){
+					historyTarget.SetActive(false);
+				}
 			}
-		}
-		)
-		;
+			)
+			;
 
 		if (dashWait > 0) {
 			Invoke ("EnableDash", dashWait);
@@ -162,54 +150,53 @@ public class Dash : MonoBehaviour {
 
 
 	void OnTriggerEnter2D(Collider2D other) {
-		Debug.Log ("COLLISION");
 		if (other.tag == "Projectile") {
 			//UI.instance.GameOver ();
 			Debug.Log ("GAME OVER");
 			Application.LoadLevel (Application.loadedLevel);
 		}
-			// Application.LoadLevel ("YOU ARE DEAD BITCH");}
+		// Application.LoadLevel ("YOU ARE DEAD BITCH");}
 
-//		if (!isInvincible && other.tag == "Projectile") {
-//			if (!hasDroppedLetter) {
-//				
-//				DropLetter ();
-//				isInvincible = true;
-//
-//				StartCoroutine (DoBlinks (6, 0.1f));
-//		
-//				//Invoke ("BecomeVincible", 0.5f);
-//				Debug.Log ("BOOM");
-//			} else if(isPlaying){
-//				isPlaying = false;
-//				UI.instance.GameOver ();
-//				Debug.Log ("GAME OVER");
-//			}
-//
-//		}
-//
-//		else if (!isInvincible&&other.tag == "Letter") {
-//			hasDroppedLetter = false;
-//			Destroy (other.gameObject);
-//		}
+		//		if (!isInvincible && other.tag == "Projectile") {
+		//			if (!hasDroppedLetter) {
+		//				
+		//				DropLetter ();
+		//				isInvincible = true;
+		//
+		//				StartCoroutine (DoBlinks (6, 0.1f));
+		//		
+		//				//Invoke ("BecomeVincible", 0.5f);
+		//				Debug.Log ("BOOM");
+		//			} else if(isPlaying){
+		//				isPlaying = false;
+		//				UI.instance.GameOver ();
+		//				Debug.Log ("GAME OVER");
+		//			}
+		//
+		//		}
+		//
+		//		else if (!isInvincible&&other.tag == "Letter") {
+		//			hasDroppedLetter = false;
+		//			Destroy (other.gameObject);
+		//		}
 	}
-		
 
-//	void DropLetter()
-//	{
-//		hasDroppedLetter = true;
-//		Instantiate (PrefabManager.instance.letter,this.transform.position, Quaternion.identity);
-//	}
-//
-//	IEnumerator DoBlinks(int numBlinks, float seconds) {
-//		for (int i=0; i<numBlinks*2; i++) {
-//
-//				sprite.enabled = !sprite.enabled;
-//			//wait for a bit
-//			yield return new WaitForSeconds(seconds);
-//		}
-//
-//		sprite.enabled=true;
-//		isInvincible = false;
-//	}
+
+	//	void DropLetter()
+	//	{
+	//		hasDroppedLetter = true;
+	//		Instantiate (PrefabManager.instance.letter,this.transform.position, Quaternion.identity);
+	//	}
+	//
+	//	IEnumerator DoBlinks(int numBlinks, float seconds) {
+	//		for (int i=0; i<numBlinks*2; i++) {
+	//
+	//				sprite.enabled = !sprite.enabled;
+	//			//wait for a bit
+	//			yield return new WaitForSeconds(seconds);
+	//		}
+	//
+	//		sprite.enabled=true;
+	//		isInvincible = false;
+	//	}
 }
