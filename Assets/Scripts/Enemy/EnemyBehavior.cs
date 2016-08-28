@@ -60,7 +60,7 @@ public abstract class EnemyBehavior : MonoBehaviour {
 		yield return new WaitForSeconds(bulletFreqency);
 
 		GameObject clone = Instantiate (bullet, transform.position, Quaternion.identity) as GameObject;
-		//clone.transform.rotation = transform.rotation;
+//		clone.transform.rotation = transform.rotation;
 
 		resolve();
 	}
