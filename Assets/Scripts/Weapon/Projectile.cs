@@ -13,12 +13,12 @@ public abstract class Projectile : MonoBehaviour {
 
 	public virtual void Awake(){
 		target = GameObject.FindGameObjectWithTag ("Player");
-		SetProjectilSize ();
+		SetProjectilSize (projectilSize);
 	}
 
 
-	public virtual void SetProjectilSize() {
-		transform.localScale = new Vector3(projectilSize,projectilSize,projectilSize);
+	public virtual void SetProjectilSize(float size) {
+		transform.localScale = new Vector3(size, size, size);
 	}
 
 
