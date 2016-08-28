@@ -58,49 +58,8 @@ public class EnemySpawnerManager : MonoBehaviour {
 		if(transform.childCount == 0){
 			newWave ();
 		}
-//		WatchInstance (P_Enemy, NB_ENEMIES_CLASSIC, ClassicTag);
-//		WatchInstance (P_DCA, NB_ENEMIES_DCA, DcaTag);
 	}
 
-
-	/// <summary>
-	/// Spawn an enemy around a square.
-	/// </summary>
-	/// <param name="maxVertical">Max vertical.</param>
-	/// <param name="maxHorizontal">Max horizontal.</param>
-//	void SpawnEnemyOLD(GameObject prefab, string tag) {
-//		EnemyBehavior clone = (Instantiate (prefab) as GameObject).GetComponent<EnemyBehavior>();
-//		clone.transform.parent = transform;
-//		clone.tag = tag;
-//
-//		bool spawnOnRight = forceSpawningOnRight;
-//		if (!spawnOnRight) {
-//			spawnOnRight = UnityEngine.Random.Range (0, 2) >= 1 ? true : false;
-//		}
-//
-//		Vector3 spawnPosition;
-//		List<GameObject> targets;
-//
-//		if (spawnOnRight) {
-////			spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(1.25f, Random.Range(0.0f, 1.0f), -Camera.main.transform.position.z));
-//			spawnPosition = rightTargets[UnityEngine.Random.Range(0, rightTargets.Count - 1)].transform.position;
-//			targets = tmp_leftTargets;
-//		}else{
-//			Vector3 rot = clone.transform.rotation.eulerAngles;
-//			rot = new Vector3(rot.x, rot.y + 180, rot.z);
-//			clone.transform.rotation = Quaternion.Euler(rot);
-//
-////			spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(-0.25f, Random.Range(0.0f, 1.0f), -Camera.main.transform.position.z));
-//			spawnPosition = leftTargets[UnityEngine.Random.Range(0, leftTargets.Count - 1)].transform.position;
-//			targets = tmp_rightTargets;
-//		}
-//
-//		clone.transform.position = new Vector3(spawnPosition.x, spawnPosition.y, 0);
-//		int randomIndex = UnityEngine.Random.Range (0, targets.Count - 1);
-//		GameObject t = targets [randomIndex];
-//		clone.targetMovment = t;
-//		targets.Remove (t);
-//	}
 
 
 	public void newWave(){
@@ -109,8 +68,7 @@ public class EnemySpawnerManager : MonoBehaviour {
 
 		tmp_leftTargets = new List<GameObject>(leftTargets);
 		tmp_rightTargets = new List<GameObject>(rightTargets);
-//		SpawnEnemies (P_Enemy, UnityEngine.Random.Range(MIN_NB_ENEMIES_CLASSIC_PER_WAVE, MAX_NB_ENEMIES_CLASSIC_PER_WAVE), ClassicTag);
-		SpawnEnemies (P_Enemy, MAX_NB_ENEMIES_CLASSIC_PER_WAVE, ClassicTag);
+		SpawnEnemies (P_Enemy, UnityEngine.Random.Range(MIN_NB_ENEMIES_CLASSIC_PER_WAVE, MAX_NB_ENEMIES_CLASSIC_PER_WAVE), ClassicTag);
 		SpawnEnemies (P_DCA, NB_ENEMIES_DCA, DcaTag);
 
 		Debug.Log (tmp_leftTargets);
@@ -184,24 +142,7 @@ public class EnemySpawnerManager : MonoBehaviour {
 		yield return new WaitForSeconds(UnityEngine.Random.Range(MIN_SPAWN_FREQUENCY, MAX_SPAWN_FREQUENCY));
 		resolve();
 	}
-
-
-
-
-	/// <summary>
-	/// Watch a specified instance and spawn or kill them.
-	/// </summary>
-	/// <param name="prefab">Prefab.</param>
-	/// <param name="nbInstance">Nb instance.</param>
-	public void WatchInstance(GameObject prefab, int nbInstance, string tag){
-//		int currentNbPrefab = GameObject.FindGameObjectsWithTag (tag).Length;
-//
-//		if (currentNbPrefab < nbInstance) {
-////			SpawnEnemy(prefab, tag);
-//		} else if (currentNbPrefab > nbInstance) {
-//			KillEnemy (tag);
-//		}
-	}
+		
 
 
 	/// <summary>
