@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 
 public class EnemySpawnerManager : MonoBehaviour {
 
 	public GameObject P_Enemy;
 	public GameObject P_DCA;
-	[Range(0,6)]
+	[Range(1,6)]
 	public int MIN_NB_ENEMIES_CLASSIC_PER_WAVE;
-	[Range(0,6)]
+	[Range(1,6)]
 	public int MAX_NB_ENEMIES_CLASSIC_PER_WAVE;
 	private int NB_ENEMIES_DCA = 0;
 
@@ -16,18 +18,28 @@ public class EnemySpawnerManager : MonoBehaviour {
 
 	private string ClassicTag;
 	private string DcaTag;
+
+	private List<GameObject> leftTargets;
+	private List<GameObject> rightTargets;
+
+	private List<GameObject> tmp_leftTargets;
+	private List<GameObject> tmp_rightTargets;
+
 	private int WAVE;
 
 
 	// Use this for initialization
 	void Start () {
-		WAVE = 0;
-
 		Camera cam = Camera.main;
 		Vector3 test = cam.ViewportToWorldPoint(new Vector3(1, 1, -cam.transform.position.z));
 
 		ClassicTag = "EnemyClassic";
 		DcaTag = "EnemyDca";
+
+		leftTargets = GameObject.FindGameObjectsWithTag ("TargetLeft").ToList();
+		rightTargets = GameObject.FindGameObjectsWithTag ("TargetRight").ToList();
+
+		WAVE = 0;
 
 		newWave ();
 	}
@@ -71,24 +83,28 @@ public class EnemySpawnerManager : MonoBehaviour {
 		}
 
 		Vector3 spawnPosition;
-		GameObject[] targets;
+		List<GameObject> targets;
 
 		if (spawnOnRight) {
-			spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(1.25f, Random.Range(0.0f, 1.0f), -Camera.main.transform.position.z));
-
+//			spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(1.25f, Random.Range(0.0f, 1.0f), -Camera.main.transform.position.z));
+			spawnPosition = rightTargets[Random.Range(0, rightTargets.Count - 1)].transform.position;
 			// Pickup a random left target and assign it to the clone.
-			targets = GameObject.FindGameObjectsWithTag ("TargetLeft");
+			targets = tmp_leftTargets;
 		}else{
 			Vector3 rot = clone.transform.rotation.eulerAngles;
 			rot = new Vector3(rot.x, rot.y + 180, rot.z);
 			clone.transform.rotation = Quaternion.Euler(rot);
 
-			spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(-0.25f, Random.Range(0.0f, 1.0f), -Camera.main.transform.position.z));
-			targets = GameObject.FindGameObjectsWithTag ("TargetRight");
+//			spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(-0.25f, Random.Range(0.0f, 1.0f), -Camera.main.transform.position.z));
+			spawnPosition = leftTargets[Random.Range(0, leftTargets.Count - 1)].transform.position;
+			targets = tmp_rightTargets;
 		}
 
 		clone.transform.position = new Vector3(spawnPosition.x, spawnPosition.y, 0);
-		clone.targetMovment = targets[Random.Range (0, targets.Length - 1)];
+		int randomIndex = Random.Range (0, targets.Count - 1);
+		GameObject t = targets [randomIndex];
+		clone.targetMovment = t;
+		targets.Remove (t);
 	}
 
 
@@ -96,8 +112,12 @@ public class EnemySpawnerManager : MonoBehaviour {
 		WAVE++;
 		Debug.Log ("WAVE " + WAVE);
 
+		tmp_leftTargets = new List<GameObject>(leftTargets);
+		tmp_rightTargets = new List<GameObject>(rightTargets);
 		SpawnEnemies (P_Enemy, Random.Range(MIN_NB_ENEMIES_CLASSIC_PER_WAVE, MAX_NB_ENEMIES_CLASSIC_PER_WAVE), ClassicTag);
 		SpawnEnemies (P_DCA, NB_ENEMIES_DCA, DcaTag);
+
+		Debug.Log (tmp_leftTargets);
 	}
 
 
