@@ -37,6 +37,7 @@ ModelImporter:
     2300014: Plane_002
     2300016: Plane_003
     2300018: Sphere
+    2300020: //RootNode
     3300000: Cylinder
     3300002: Cylinder_001
     3300004: Cylinder_002
@@ -47,6 +48,7 @@ ModelImporter:
     3300014: Plane_002
     3300016: Plane_003
     3300018: Sphere
+    3300020: //RootNode
     4300000: Cylinder_004
     4300002: Cylinder_003
     4300004: Cylinder_002
