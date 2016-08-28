@@ -10,6 +10,7 @@ public class ShooterBehaviour : MonoBehaviour {
 	private float timeElapsed;
 
 	public GameObject classicBullet;
+	public ParticleSystem projectileTraineePrefab;
 	public GameObject followingBullet;
 	public bool canFollow;
 
@@ -87,7 +88,11 @@ public class ShooterBehaviour : MonoBehaviour {
 		yield return new WaitForSeconds(bulletFreqency);
 
 		GameObject clone = Instantiate (bullet, transform.position, Quaternion.identity) as GameObject;
-		clone.transform.rotation = transform.rotation;
+		ParticleSystem cloneParticleSystem = Instantiate (projectileTraineePrefab, clone.transform.position, Quaternion.identity) as ParticleSystem;
+		cloneParticleSystem.transform.parent = clone.transform;
+		cloneParticleSystem.transform.rotation = Quaternion.Euler (0, 0, -90);
+		Debug.Log (cloneParticleSystem.transform.rotation);
+		//clone.transform.rotation = transform.rotation;
 
 		resolve();
 	}

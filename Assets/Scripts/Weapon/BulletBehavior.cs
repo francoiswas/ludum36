@@ -17,12 +17,13 @@ public class BulletBehavior : Projectile {
 
 
 	public void SraightMovement(){
-		transform.Translate (Vector3.forward * Time.deltaTime * projectileSpeed);
+		
+		transform.Translate (Vector3.right * - Time.deltaTime * projectileSpeed);
 	}
 
 
 	public IEnumerator FollowPlayer(){
-		//transform.LookAt (target.transform);
+		transform.LookAt (target.transform);
 		transform.Translate (Vector3.forward * Time.deltaTime * projectileSpeed);
 
 		yield return new WaitForSeconds (timeBeforeDestruction);
