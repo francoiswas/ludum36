@@ -6,10 +6,14 @@ public class Dash : MonoBehaviour {
 	public float 			dashTime;
 	public LeanTweenType 	tweenType;
 	public float 			dashWait;
+	public GameObject		prefabTarget;
 
+	private GameObject		target;
+	private GameObject 		historyTarget;
 	private	Vector3 		heading;
 	private	Vector3 		destination;
 	private Vector3			mousePosition;
+	private Vector3 		historyPosition;
 	private bool 			hasDroppedLetter;
 //	private bool			isInvincible;
 	private bool			isPlaying;
@@ -25,6 +29,9 @@ public class Dash : MonoBehaviour {
 		sprite = this.GetComponent<SpriteRenderer> ();
 		isPlaying = true;
 		canDash = true;
+		target= Instantiate (prefabTarget);
+		historyTarget= Instantiate (prefabTarget);
+		historyTarget.SetActive (false);
 
 	}
 	
@@ -34,6 +41,17 @@ public class Dash : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)&&canDash) {
 			DoDash ();
 		}
+		DrawTarget ();
+	}
+
+	void DrawTarget()
+	{
+		Vector3 mp  =Input.mousePosition;
+		mp.z = -Camera.main.transform.position.z;
+		Vector3 head = Camera.main.ScreenToWorldPoint (mp)-transform.position;
+		Vector3 dest = transform.position+head.normalized*dashLength;
+		target.transform.position = dest;
+		historyPosition = dest;
 	}
 
 	void DoDash()
@@ -48,7 +66,13 @@ public class Dash : MonoBehaviour {
 		mousePosition.z = -Camera.main.transform.position.z;
 		heading = Camera.main.ScreenToWorldPoint (mousePosition)-transform.position;
 		destination = transform.position+heading.normalized*dashLength;
-		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
+		historyTarget.transform.position = historyPosition;
+		historyTarget.SetActive (true);
+		LeanTween.move (this.gameObject, destination, dashTime).setEase (tweenType).setOnComplete (() => {
+			historyTarget.SetActive(false);
+		}
+		)
+		;
 
 		if (dashWait > 0) {
 			Invoke ("EnableDash", dashWait);
