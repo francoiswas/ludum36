@@ -78,4 +78,14 @@ public abstract class EnemyBehavior : MonoBehaviour {
 		transform.position = Vector3.Lerp (transform.position,targetMovment.transform.position, speed);
 //		transform.LookAt (targetMovment.transform.position);
 	}
+
+
+	public virtual void OnBecameInvisible() {
+		Kill ();
+	}
+
+
+	public virtual void Kill(){
+		Destroy (gameObject);
+	}
 }
