@@ -5,6 +5,7 @@ public class Dash : MonoBehaviour {
 	public float 			dashLength;
 	public float 			dashTime;
 	public LeanTweenType 	tweenType;
+	public float 			dashWait;
 
 	private	Vector3 		heading;
 	private	Vector3 		destination;
@@ -12,6 +13,8 @@ public class Dash : MonoBehaviour {
 	private bool 			hasDroppedLetter;
 //	private bool			isInvincible;
 	private bool			isPlaying;
+
+	private bool			canDash;
 
 
 	private SpriteRenderer	sprite;
@@ -21,13 +24,14 @@ public class Dash : MonoBehaviour {
 	void Start () {
 		sprite = this.GetComponent<SpriteRenderer> ();
 		isPlaying = true;
+		canDash = true;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetMouseButtonDown (0)&&canDash) {
 			DoDash ();
 		}
 	}
@@ -39,12 +43,24 @@ public class Dash : MonoBehaviour {
 //		destination = (Vector2)transform.position+heading.normalized*dashLength;
 //
 //		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
+		canDash=false;
 		mousePosition =Input.mousePosition;
 		mousePosition.z = -Camera.main.transform.position.z;
 		heading = Camera.main.ScreenToWorldPoint (mousePosition)-transform.position;
 		destination = transform.position+heading.normalized*dashLength;
 		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
 
+		if (dashWait > 0) {
+			Invoke ("EnableDash", dashWait);
+		} else {
+			canDash = true;
+		}
+
+	}
+
+	void EnableDash()
+	{
+		canDash = true;
 	}
 
 
