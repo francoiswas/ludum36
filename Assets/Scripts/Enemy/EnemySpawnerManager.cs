@@ -6,35 +6,40 @@ public class EnemySpawnerManager : MonoBehaviour {
 
 	public GameObject P_Enemy;
 	public GameObject P_DCA;
-	[Range(0,50)]
-	public int NB_ENEMIES_CLASSIC;
-	[Range(0,0)]
-	public int NB_ENEMIES_DCA;
+	[Range(0,6)]
+	public int MIN_NB_ENEMIES_CLASSIC_PER_WAVE;
+	[Range(0,6)]
+	public int MAX_NB_ENEMIES_CLASSIC_PER_WAVE;
+	private int NB_ENEMIES_DCA = 0;
 
 	public bool forceSpawningOnRight;
 
 	private string ClassicTag;
 	private string DcaTag;
+	private int WAVE;
 
 
 	// Use this for initialization
 	void Start () {
-		Camera cam = Camera.main;
+		WAVE = 0;
 
+		Camera cam = Camera.main;
 		Vector3 test = cam.ViewportToWorldPoint(new Vector3(1, 1, -cam.transform.position.z));
 
 		ClassicTag = "EnemyClassic";
 		DcaTag = "EnemyDca";
 
-		SpawnEnemies (P_Enemy, NB_ENEMIES_CLASSIC, ClassicTag);
-		SpawnEnemies (P_DCA, NB_ENEMIES_DCA, DcaTag);
+		newWave ();
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-		WatchInstance (P_Enemy, NB_ENEMIES_CLASSIC, ClassicTag);
-		WatchInstance (P_DCA, NB_ENEMIES_DCA, DcaTag);
+		if(transform.childCount == 0){
+			newWave ();
+		}
+//		WatchInstance (P_Enemy, NB_ENEMIES_CLASSIC, ClassicTag);
+//		WatchInstance (P_DCA, NB_ENEMIES_DCA, DcaTag);
 	}
 
 
@@ -87,6 +92,16 @@ public class EnemySpawnerManager : MonoBehaviour {
 	}
 
 
+	public void newWave(){
+		WAVE++;
+		Debug.Log ("WAVE " + WAVE);
+
+		SpawnEnemies (P_Enemy, Random.Range(MIN_NB_ENEMIES_CLASSIC_PER_WAVE, MAX_NB_ENEMIES_CLASSIC_PER_WAVE), ClassicTag);
+		SpawnEnemies (P_DCA, NB_ENEMIES_DCA, DcaTag);
+	}
+
+
+
 	/// <summary>
 	/// Watch a specified instance and spawn or kill them.
 	/// </summary>
@@ -96,7 +111,7 @@ public class EnemySpawnerManager : MonoBehaviour {
 		int currentNbPrefab = GameObject.FindGameObjectsWithTag (tag).Length;
 
 		if (currentNbPrefab < nbInstance) {
-			SpawnEnemy(prefab, tag);
+//			SpawnEnemy(prefab, tag);
 		} else if (currentNbPrefab > nbInstance) {
 			KillEnemy (tag);
 		}
@@ -107,6 +122,7 @@ public class EnemySpawnerManager : MonoBehaviour {
 	/// Kill a random enemy.
 	/// </summary>
 	void KillEnemy(string tag){
+		Debug.Log ("KillEnemy " + tag);
 		GameObject[] Enemies = GameObject.FindGameObjectsWithTag (tag);
 
 		Destroy(Enemies[Random.Range (0, Enemies.Length - 1)]);
