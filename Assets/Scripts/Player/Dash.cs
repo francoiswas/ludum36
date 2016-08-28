@@ -6,8 +6,9 @@ public class Dash : MonoBehaviour {
 	public float 			dashTime;
 	public LeanTweenType 	tweenType;
 
-	private	Vector2 		heading;
-	private	Vector2 		destination;
+	private	Vector3 		heading;
+	private	Vector3 		destination;
+	private Vector3			mousePosition;
 	private bool 			hasDroppedLetter;
 	private bool			isInvincible;
 	private bool			isPlaying;
@@ -34,11 +35,15 @@ public class Dash : MonoBehaviour {
 	void DoDash()
 	{
 
-		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
-		destination = (Vector2)transform.position+heading.normalized*dashLength;
-
+//		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
+//		destination = (Vector2)transform.position+heading.normalized*dashLength;
+//
+//		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
+		mousePosition =Input.mousePosition;
+		mousePosition.z = -Camera.main.transform.position.z;
+		heading = Camera.main.ScreenToWorldPoint (mousePosition)-transform.position;
+		destination = transform.position+heading.normalized*dashLength;
 		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
-
 
 	}
 
