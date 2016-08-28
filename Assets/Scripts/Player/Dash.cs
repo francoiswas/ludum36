@@ -2,9 +2,12 @@
 using System.Collections;
 
 public class Dash : MonoBehaviour {
+	[Range (0, 10)]
 	public float 			dashLength;
+	[Range (0, 3)]
 	public float 			dashTime;
 	public LeanTweenType 	tweenType;
+	[Range (0, 3)]
 	public float 			dashWait;
 	public GameObject		prefabTarget;
 
