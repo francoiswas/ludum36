@@ -7,6 +7,7 @@ public class Dash : MonoBehaviour {
 	public LeanTweenType 	tweenType;
 	public float 			dashWait;
 	public GameObject		prefabTarget;
+	public bool 			enableDashHistory;
 
 	private GameObject		target;
 	private GameObject 		historyTarget;
@@ -30,9 +31,10 @@ public class Dash : MonoBehaviour {
 		isPlaying = true;
 		canDash = true;
 		target= Instantiate (prefabTarget);
-		historyTarget= Instantiate (prefabTarget);
-		historyTarget.SetActive (false);
-
+		if (enableDashHistory) {
+			historyTarget = Instantiate (prefabTarget);
+			historyTarget.SetActive (false);
+		}
 	}
 	
 	// Update is called once per frame
@@ -41,7 +43,9 @@ public class Dash : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)&&canDash) {
 			DoDash ();
 		}
+
 		DrawTarget ();
+
 	}
 
 	void DrawTarget()
@@ -51,7 +55,9 @@ public class Dash : MonoBehaviour {
 		Vector3 head = Camera.main.ScreenToWorldPoint (mp)-transform.position;
 		Vector3 dest = transform.position+head.normalized*dashLength;
 		target.transform.position = dest;
-		historyPosition = dest;
+		if (enableDashHistory) {
+			historyPosition = dest;
+		}
 	}
 
 	void DoDash()
@@ -66,10 +72,14 @@ public class Dash : MonoBehaviour {
 		mousePosition.z = -Camera.main.transform.position.z;
 		heading = Camera.main.ScreenToWorldPoint (mousePosition)-transform.position;
 		destination = transform.position+heading.normalized*dashLength;
-		historyTarget.transform.position = historyPosition;
-		historyTarget.SetActive (true);
+		if (enableDashHistory) {
+			historyTarget.transform.position = historyPosition;
+			historyTarget.SetActive (true);
+		}
 		LeanTween.move (this.gameObject, destination, dashTime).setEase (tweenType).setOnComplete (() => {
-			historyTarget.SetActive(false);
+			if(enableDashHistory){
+				historyTarget.SetActive(false);
+			}
 		}
 		)
 		;
