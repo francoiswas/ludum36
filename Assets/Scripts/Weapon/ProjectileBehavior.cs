@@ -36,7 +36,6 @@ public abstract class ProjectileBehavior : MonoBehaviour {
 
 
 	public virtual void Destruct() {
-		Debug.Log ("DESTRUCT");
 		Destroy (gameObject);
 	}
 }
