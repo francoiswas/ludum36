@@ -67,8 +67,8 @@ public abstract class EnemyBehavior : MonoBehaviour {
 		yield return new WaitForSeconds(bulletFreqency);
 
 		GameObject clone = Instantiate (bullet, transform.position, Quaternion.identity) as GameObject;
-		Debug.Log (transform.rotation);
-		clone.transform.rotation = Quaternion.LookRotation(transform.position);
+		Debug.Log (transform.rotation + " " + clone.transform.rotation);
+//		clone.transform.rotation = Quaternion.LookRotation(transform.position);
 
 		resolve();
 	}
@@ -77,6 +77,6 @@ public abstract class EnemyBehavior : MonoBehaviour {
 
 	public virtual void Move() {
 		transform.position = Vector3.Lerp (transform.position,targetMovment.transform.position, speed);
-		transform.LookAt (targetMovment.transform.position);
+//		transform.LookAt (targetMovment.transform.position);
 	}
 }
