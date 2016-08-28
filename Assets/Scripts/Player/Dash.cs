@@ -7,6 +7,8 @@ public class Dash : MonoBehaviour {
 	public LeanTweenType 	tweenType;
 	public float 			dashWait;
 	public GameObject		prefabTarget;
+
+	public bool 			enableFreeDash;
 	public bool 			enableDashHistory;
 
 	private GameObject		target;
@@ -30,22 +32,33 @@ public class Dash : MonoBehaviour {
 		sprite = this.GetComponent<SpriteRenderer> ();
 		isPlaying = true;
 		canDash = true;
-		target= Instantiate (prefabTarget);
+		if (enableFreeDash) {
+			target = Instantiate (prefabTarget);
+		}
+
 		if (enableDashHistory) {
 			historyTarget = Instantiate (prefabTarget);
 			historyTarget.SetActive (false);
 		}
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-		if (Input.GetMouseButtonDown (0)&&canDash) {
-			DoDash ();
+		if (canDash) {
+			if(Input.GetMouseButtonDown (0) && enableFreeDash) {
+				DoDash (Input.mousePosition,true);
+			}
+			else if (Input.GetMouseButtonDown (0)) {
+				DoDash (Input.mousePosition, true);
+			} else if (Input.GetMouseButtonDown (1)){
+				DoDash (Input.mousePosition, false);
+			}
 		}
 
-		DrawTarget ();
-
+		if (enableFreeDash) {
+			DrawTarget ();
+		}
 	}
 
 	void DrawTarget()
@@ -60,7 +73,7 @@ public class Dash : MonoBehaviour {
 		}
 	}
 
-	void DoDash()
+	void DoDash(Vector3 dashPosition, bool up)
 	{
 
 //		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
@@ -68,10 +81,23 @@ public class Dash : MonoBehaviour {
 //
 //		LeanTween.move(this.gameObject, destination, dashTime).setEase(tweenType);
 		canDash=false;
-		mousePosition =Input.mousePosition;
+		mousePosition = dashPosition;
+	
+
 		mousePosition.z = -Camera.main.transform.position.z;
 		heading = Camera.main.ScreenToWorldPoint (mousePosition)-transform.position;
+
+		if (!enableFreeDash) {
+			heading.y = transform.position.y + (up?10:-10);
+
+		}
+
 		destination = transform.position+heading.normalized*dashLength;
+
+		if (!enableFreeDash) {
+			destination.x = transform.position.x;
+
+		}
 		if (enableDashHistory) {
 			historyTarget.transform.position = historyPosition;
 			historyTarget.SetActive (true);
