@@ -75,7 +75,7 @@ public abstract class EnemyBehavior : MonoBehaviour {
 
 
 	public virtual void Move() {
-		transform.position = Vector3.Lerp (transform.position,targetMovment.transform.position, speed);
+		transform.position = Vector3.Lerp (transform.position, targetMovment.transform.position, speed);
 //		transform.LookAt (targetMovment.transform.position);
 	}
 
