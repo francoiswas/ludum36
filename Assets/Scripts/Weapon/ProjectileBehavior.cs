@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class Projectile : MonoBehaviour {
+public abstract class ProjectileBehavior : MonoBehaviour {
 	public float projectileSpeed;
 	public float projectilSize;
 	public Material projectileMaterial;
 
 	// Variables pour Munition 
 	public float timeBeforeDestruction;
-	public GameObject target;
+	public GameObject targetLookAt;
 
 
 	public virtual void Awake(){
-		target = GameObject.FindGameObjectWithTag ("Player");
+		targetLookAt = GameObject.FindGameObjectWithTag ("Player");
 		SetProjectilSize (projectilSize);
 	}
 

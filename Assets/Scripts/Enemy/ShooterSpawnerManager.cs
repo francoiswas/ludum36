@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Reflection;
 
-public class ShooterManager : MonoBehaviour {
+public class ShooterSpawnerManager : MonoBehaviour {
 
 	public GameObject P_Enemy;
 	public GameObject P_DCA;
