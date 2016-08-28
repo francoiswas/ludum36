@@ -21,7 +21,10 @@ public class ClassicShooterBehaviour : EnemyBehavior {
 	public override void Update () {
 		base.Update ();
 
+<<<<<<< HEAD
 		// Anim 
 //		transform.LookAt (enemyTarget.transform.position);
+=======
+>>>>>>> 653fa39c7a2bf0babadaef75d66ade9ec3ce86d9
 	}
 }
