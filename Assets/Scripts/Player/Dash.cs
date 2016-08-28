@@ -6,13 +6,18 @@ public class Dash : MonoBehaviour {
 	public float 			dashLength;
 	[Range (0, 3)]
 	public float 			dashTime;
-	public LeanTweenType 	tweenType;
 	[Range (0, 3)]
 	public float 			dashWait;
-	public GameObject		prefabTarget;
+	[Range (0.1f, 1)]
+	public float 			followSpeed;
 
 	public bool 			enableFreeDash;
 	public bool 			enableDashHistory;
+	public bool 			enableFollowMouse;
+	public bool				enableLookAtMouse;
+
+	public LeanTweenType 	tweenType;
+	public GameObject		prefabTarget;
 
 	private GameObject		target;
 	private GameObject 		historyTarget;
@@ -48,6 +53,15 @@ public class Dash : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (enableLookAtMouse) {
+			Vector3 upAxis = new Vector3(0,0,-1);
+			Vector3 mouseScreenPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			//set mouses z to your targets
+			mouseScreenPosition.z = 0;
+
+			Debug.Log (mouseScreenPosition);
+			//			Vector3 mouseWorldSpace = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+		}
 		if (canDash) {
 			if(Input.GetMouseButtonDown (0) && enableFreeDash) {
 				DoDash (Input.mousePosition,true);
@@ -62,6 +76,22 @@ public class Dash : MonoBehaviour {
 		if (enableFreeDash) {
 			DrawTarget ();
 		}
+
+		if (enableFollowMouse) {
+			transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x,
+				Input.mousePosition.y, -Camera.main.transform.position.z)), followSpeed);
+		}
+
+		if (enableLookAtMouse) {
+			Vector3 mp = Input.mousePosition;
+			mp.z = -Camera.main.transform.position.z;
+			float AngleRad = Mathf.Atan2(Camera.main.ScreenToWorldPoint (mp).y - transform.position.y, Camera.main.ScreenToWorldPoint (mp).x - transform.position.x);
+			// Get Angle in Degrees
+			float AngleDeg = (180 / Mathf.PI) * AngleRad;
+			// Rotate Object
+			this.transform.rotation = Quaternion.Euler(0, 0, AngleDeg);
+		}
+
 	}
 
 	void DrawTarget()
@@ -74,10 +104,14 @@ public class Dash : MonoBehaviour {
 		if (enableDashHistory) {
 			historyPosition = dest;
 		}
+
+
+
+
 	}
 
-	void DoDash(Vector3 dashPosition, bool up)
-	{
+
+	void DoDash(Vector3 dashPosition, bool up){
 
 //		heading = Camera.main.ScreenToWorldPoint (Input.mousePosition)-transform.position;
 //		destination = (Vector2)transform.position+heading.normalized*dashLength;
