@@ -20,6 +20,5 @@ public class ClassicShooterBehaviour : EnemyBehavior {
 	// Update is called once per frame
 	public override void Update () {
 		base.Update ();
-
 	}
 }
