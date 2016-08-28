@@ -8,7 +8,8 @@ public abstract class EnemyBehavior : MonoBehaviour {
 	protected GameObject bullet;
 	protected float timeElapsed;
 
-
+	public GameObject targetMovment;
+	public float speed;
 	[Range (1, 10)]
 	public int bulletPerBurst;
 	[Range (0, 10)]
@@ -17,19 +18,25 @@ public abstract class EnemyBehavior : MonoBehaviour {
 	public float burstFreqency;
 
 
+	public virtual void Awake () {
+		speed /= 500;
+	}
+
 	public virtual void Update() {
 		timeElapsed += Time.deltaTime;
 		if (timeElapsed >= burstFreqency) {
 			timeElapsed = 0;
 			Shoot ();
 		}
+
+		Move ();
 	}
 
 
 	/// <summary>
 	/// Main shooting method.
 	/// </summary>
-	void Shoot() {
+	public virtual void Shoot() {
 		Shoot (bulletPerBurst);
 	}
 
@@ -38,7 +45,7 @@ public abstract class EnemyBehavior : MonoBehaviour {
 	/// Recursive shooting method. Instantiate nbBullet via a Coroutine.
 	/// </summary>
 	/// <param name="nbBullet">Nb bullet.</param>
-	void Shoot(int nbBullet){
+	public virtual void Shoot(int nbBullet){
 		Promise promise = new Promise((resolve, reject) => {
 			nbBullet--;
 			StartCoroutine(LaunchBulletCoroutine(resolve, reject));
@@ -61,10 +68,15 @@ public abstract class EnemyBehavior : MonoBehaviour {
 
 		GameObject clone = Instantiate (bullet, transform.position, Quaternion.identity) as GameObject;
 		Debug.Log (transform.rotation);
-//		clone.transform.rotation = transform.rotation;
+		clone.transform.rotation = Quaternion.LookRotation(transform.position);
 
 		resolve();
 	}
 
 
+
+	public virtual void Move() {
+		transform.position = Vector3.Lerp (transform.position,targetMovment.transform.position, speed);
+		transform.LookAt (targetMovment.transform.position);
+	}
 }

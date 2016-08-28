@@ -22,6 +22,6 @@ public class ClassicShooterBehaviour : EnemyBehavior {
 		base.Update ();
 
 		// Anim 
-		transform.LookAt (enemyTarget.transform.position);
+//		transform.LookAt (enemyTarget.transform.position);
 	}
 }
